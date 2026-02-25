@@ -40,90 +40,90 @@ class LLMDXKSChecks:
         self.crds_cache = None
 
         self.tests = {
-                "cluster": {
-                    "description": "Cluster readiness tests",
-                    "tests": [
-                        {
-                            "name": "instance_type",
-                            "function": self.test_instance_type,
-                            "description": "Test if the cluster has at least one supported instance type",
-                            "suggested_action": "Provision a cluster with at least one supported instance type",
-                            "result": False
-                        },
-                        {
-                            "name": "gpu_availability",
-                            "function": self.test_gpu_availability,
-                            "description": "Test if the cluster has GPU drivers",
-                            "suggested_action": "Provision a cluster with at least one supported GPU driver",
-                            "result": False
-                        },
-                        ]
+            "cluster": {
+                "description": "Cluster readiness tests",
+                "tests": [
+                    {
+                        "name": "instance_type",
+                        "function": self.test_instance_type,
+                        "description": "Test if the cluster has at least one supported instance type",
+                        "suggested_action": "Provision a cluster with at least one supported instance type",
+                        "result": False
                     },
-                "operators": {
-                    "description": "Operators readiness tests",
-                    "tests": [
-                        {
-                            "name": "crd_certmanager",
-                            "function": self.test_crd_certmanager,
-                            "description": "test if the cluster has the cert-manager crds",
-                            "suggested_action": "install cert-manager",
-                            "result": False
-                        },
-                        {
-                            "name": "operator_certmanager",
-                            "function": self.test_operator_certmanager,
-                            "description": "test if the cert-manager operator is running properly",
-                            "suggested_action": "install or verify cert-manager deployment",
-                            "result": False
-                        },
-                        {
-                            "name": "crd_sailoperator",
-                            "function": self.test_crd_sailoperator,
-                            "description": "test if the cluster has the sailoperator crds",
-                            "suggested_action": "install sail-operator",
-                            "result": False
-                        },
-                        {
-                            "name": "operator_sail",
-                            "function": self.test_operator_sail,
-                            "description": "test if the sail operator is running properly",
-                            "suggested_action": "install or verify sail operator deployment",
-                            "result": False
-                        },
-                        {
-                            "name": "crd_lwsoperator",
-                            "function": self.test_crd_lwsoperator,
-                            "description": "test if the cluster has the lws-operator crds",
-                            "suggested_action": "install lws-operator",
-                            "result": False,
-                            "optional": True
-                        },
-                        {
-                            "name": "operator_lws",
-                            "function": self.test_operator_lws,
-                            "description": "test if the lws-operator is running properly",
-                            "suggested_action": "install or verify lws operator deployment",
-                            "result": False,
-                            "optional": True
-                        },
-                        {
-                            "name": "crd_kserve",
-                            "function": self.test_crd_kserve,
-                            "description": "test if the cluster has the kserve crds",
-                            "suggested_action": "install kserve",
-                            "result": False,
-                            "optional": False
-                        },
-                        {
-                            "name": "operator_kserve",
-                            "function": self.test_operator_kserve,
-                            "description": "test if the kserve controller is running properly",
-                            "suggested_action": "install or verify kserve deployment",
-                            "result": False,
-                        },
-                    ]
-                    }
+                    {
+                        "name": "gpu_availability",
+                        "function": self.test_gpu_availability,
+                        "description": "Test if the cluster has GPU drivers",
+                        "suggested_action": "Provision a cluster with at least one supported GPU driver",
+                        "result": False
+                    },
+                ]
+            },
+            "operators": {
+                "description": "Operators readiness tests",
+                "tests": [
+                    {
+                        "name": "crd_certmanager",
+                        "function": self.test_crd_certmanager,
+                        "description": "test if the cluster has the cert-manager crds",
+                        "suggested_action": "install cert-manager",
+                        "result": False
+                    },
+                    {
+                        "name": "operator_certmanager",
+                        "function": self.test_operator_certmanager,
+                        "description": "test if the cert-manager operator is running properly",
+                        "suggested_action": "install or verify cert-manager deployment",
+                        "result": False
+                    },
+                    {
+                        "name": "crd_sailoperator",
+                        "function": self.test_crd_sailoperator,
+                        "description": "test if the cluster has the sailoperator crds",
+                        "suggested_action": "install sail-operator",
+                        "result": False
+                    },
+                    {
+                        "name": "operator_sail",
+                        "function": self.test_operator_sail,
+                        "description": "test if the sail operator is running properly",
+                        "suggested_action": "install or verify sail operator deployment",
+                        "result": False
+                    },
+                    {
+                        "name": "crd_lwsoperator",
+                        "function": self.test_crd_lwsoperator,
+                        "description": "test if the cluster has the lws-operator crds",
+                        "suggested_action": "install lws-operator",
+                        "result": False,
+                        "optional": True
+                    },
+                    {
+                        "name": "operator_lws",
+                        "function": self.test_operator_lws,
+                        "description": "test if the lws-operator is running properly",
+                        "suggested_action": "install or verify lws operator deployment",
+                        "result": False,
+                        "optional": True
+                    },
+                    {
+                        "name": "crd_kserve",
+                        "function": self.test_crd_kserve,
+                        "description": "test if the cluster has the kserve crds",
+                        "suggested_action": "install kserve",
+                        "result": False,
+                        "optional": False
+                    },
+                    {
+                        "name": "operator_kserve",
+                        "function": self.test_operator_kserve,
+                        "description": "test if the kserve controller is running properly",
+                        "suggested_action": "install or verify kserve deployment",
+                        "result": False,
+                    },
+                ]
             }
+        }
 
     def _log_init(self):
         logger = logging.getLogger(__name__)
@@ -167,7 +167,7 @@ class LLMDXKSChecks:
     def _deployment_ready(self, namespace_name, deployment_name):
         try:
             deployment = self.k8s_client.AppsV1Api().read_namespaced_deployment(
-                    name=deployment_name, namespace=namespace_name)
+                name=deployment_name, namespace=namespace_name)
         except Exception as e:
             self.logger.error(f"{e}")
             return False
@@ -278,13 +278,13 @@ class LLMDXKSChecks:
                     return True
                 else:
                     self.logger.warning(
-                            f"No allocatable NVIDIA GPUs on node {node.metadata.name}"
-                            " - no NVIDIA GPU drivers present")
+                        f"No allocatable NVIDIA GPUs on node {node.metadata.name}"
+                        " - no NVIDIA GPU drivers present")
                     return False
             else:
                 self.logger.warning(
-                        f"No NVIDIA GPU drivers present on node {node.metadata.name}"
-                        " - no NVIDIA GPU accelerators present")
+                    f"No NVIDIA GPU drivers present on node {node.metadata.name}"
+                    " - no NVIDIA GPU accelerators present")
                 return False
         gpu_found = False
         accelerators = {
@@ -463,7 +463,7 @@ def cli_arguments():
         default="all",
         env_var="LLMD_XKS_SUITE",
         help="Test suite to execute"
-        )
+    )
 
     return parser.parse_args()
 
