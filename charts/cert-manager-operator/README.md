@@ -78,17 +78,18 @@ pullSecretFile: ~/pull-secret.txt
 | `bundle.version` | OLM bundle version | `v1.15.2` |
 | `pullSecret.name` | Pull secret name | `redhat-pull-secret` |
 | `pullSecret.dockerConfigJson` | Docker config (set by helmfile) | `""` |
+| `createInfrastructure` | Create Infrastructure CR (set to `false` on OpenShift, defaults to `true` if not set) | `true` |
 | `certManager.enabled` | Create CertManager CR | `true` |
 
 ## What Gets Deployed
 
 **Presync hooks** (before Helm install):
-- Infrastructure CR (required for non-OpenShift clusters)
 - Operand namespace (`cert-manager`)
 - CertManager CR (`cluster`)
 
 **Helm install** (with Server-Side Apply):
 - cert-manager CRDs + Infrastructure CRD stub - installed from `crds/` directory with SSA
+- Infrastructure CR (only on non-OpenShift clusters, controlled by `createInfrastructure`)
 - Operator namespace (`cert-manager-operator`)
 - Pull secrets (in both namespaces)
 - cert-manager ServiceAccounts with `imagePullSecrets` (cert-manager, cert-manager-cainjector, cert-manager-webhook)
@@ -173,14 +174,28 @@ podman login registry.redhat.io
 kubectl rollout restart deployment -n cert-manager --all
 ```
 
-## Non-OpenShift Compatibility
+## Platform Compatibility
 
-This chart includes workarounds for running the Red Hat operator outside OpenShift:
+This chart works on both OpenShift and non-OpenShift Kubernetes clusters:
 
-1. **Infrastructure CRD/CR stub** - The operator requires `infrastructures.config.openshift.io` API
+### Non-OpenShift Clusters (AKS, CoreWeave, etc.)
+
+The chart includes workarounds for running the Red Hat operator outside OpenShift:
+
+1. **Infrastructure CRD/CR stub** - The operator requires `infrastructures.config.openshift.io` API. The chart creates a stub Infrastructure CR (default behavior when `createInfrastructure` is not set or set to `true`).
 2. **CertManager CR pre-creation** - Created in presync to avoid race conditions
 3. **OLM pattern replacement** - `olm.targetNamespaces` handled via olm-extractor's `--watch-namespace=""` flag
-4. **Pre-created ServiceAccounts with imagePullSecrets** - On non-OpenShift clusters (AKS, GKE, etc.), there's no global pull secret mechanism. The chart pre-creates cert-manager ServiceAccounts with `imagePullSecrets` configured. The operator preserves these when it reconciles.
+4. **Pre-created ServiceAccounts with imagePullSecrets** - On non-OpenShift clusters, there's no global pull secret mechanism. The chart pre-creates cert-manager ServiceAccounts with `imagePullSecrets` configured. The operator preserves these when it reconciles.
+
+### OpenShift Clusters
+
+On OpenShift, the Infrastructure CR already exists and is managed by the cluster. Set `createInfrastructure: false` in your values to skip creating it:
+
+```yaml
+# values.yaml or root helmfile
+certManager:
+  createInfrastructure: false
+```
 
 ## File Structure
 

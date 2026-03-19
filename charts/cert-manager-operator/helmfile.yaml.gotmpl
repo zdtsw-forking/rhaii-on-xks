@@ -24,6 +24,8 @@ releases:
     set:
       - name: bundle.version
         value: {{ .Values.bundle.version }}
+      - name: createInfrastructure
+        value: {{- if hasKey .Values "createInfrastructure" }} {{ .Values.createInfrastructure }}{{- else }} true{{- end }}
 {{- if .Values.useSystemPodmanAuth }}
       - name: pullSecret.dockerConfigJson
         file: {{ env "HOME" }}/.config/containers/auth.json

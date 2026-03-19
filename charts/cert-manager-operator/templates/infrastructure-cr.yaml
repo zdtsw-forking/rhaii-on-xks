@@ -1,5 +1,7 @@
 # Infrastructure CR - required for non-OpenShift clusters
 # The operator checks for infrastructure.config.openshift.io/cluster
+# Skip this on OpenShift clusters where it already exists
+{{- if .Values.createInfrastructure }}
 apiVersion: config.openshift.io/v1
 kind: Infrastructure
 metadata:
@@ -9,3 +11,4 @@ status:
   controlPlaneTopology: HighlyAvailable
   infrastructureTopology: HighlyAvailable
   platform: None
+{{- end }}

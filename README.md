@@ -158,6 +158,8 @@ useSystemPodmanAuth: true
 # Operators
 certManager:
   enabled: true
+  # Set to false on OpenShift clusters (Infrastructure CR already exists)
+  createInfrastructure: false
 
 sailOperator:
   enabled: true
@@ -165,6 +167,8 @@ sailOperator:
 lwsOperator:
   enabled: true   # Required for multi-node LLM workloads
 ```
+
+> **Note for OpenShift Users:** The `certManager.createInfrastructure: false` setting is required on OpenShift clusters because the Infrastructure CR is created when the cluster is provisioned and is managed by the cluster. Without this setting, cert-manager deployment will fail with ownership metadata errors.
 
 ---
 
