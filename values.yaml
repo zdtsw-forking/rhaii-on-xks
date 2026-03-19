@@ -35,4 +35,7 @@ lwsOperator:
 # =============================================================================
 
 # KServe OCI chart version (dev variant until official builds are on registry.redhat.io)
-kserveChartVersion: "3.4.0-ea.1_610f4a4"
+# Format: {base_version}-dev-{git_sha} (e.g., 3.4.0-ea.1-dev-610f4a4)
+# Note: Use dashes not underscores - Helm requires valid semantic versioning
+# Available versions: https://github.com/opendatahub-io/rhaii-on-xks/pkgs/container/kserve-rhaii-xks
+kserveChartVersion: "3.4.0-ea.1-dev-610f4a4"
