@@ -131,6 +131,17 @@ yq eval 'select(.kind != "ValidatingWebhookConfiguration" and .kind != "Mutating
 
 rm -f "${TEMP_BUILD}" "${FILES_DIR}/resources-all.yaml"
 
+# Patch: add runAsUser to llmisvc-controller-manager deployment
+# UBI-based images don't set USER in Dockerfile, so non-OpenShift clusters
+# (which lack SCC to inject a UID) will fail the runAsNonRoot check without this.
+# TODO(RHOAIENG-56701): remove this patch once the image build sets USER 1000
+# https://redhat.atlassian.net/browse/RHOAIENG-56701
+echo "Patching llmisvc-controller-manager securityContext (runAsUser: 1000)..."
+yq eval '
+  (select(.kind == "Deployment" and .metadata.name == "llmisvc-controller-manager")
+    .spec.template.spec.securityContext.runAsUser) = 1000
+' -i "${FILES_DIR}/resources.yaml"
+
 if [[ "${SKIP_IMAGE_REPLACEMENT}" == "true" ]]; then
     echo ""
     echo "Skipping image replacement (--skip-image-replacement flag set)"

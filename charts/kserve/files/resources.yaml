@@ -742,6 +742,7 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+        runAsUser: 1000
       serviceAccountName: llmisvc-controller-manager
       terminationGracePeriodSeconds: 30
       volumes:
